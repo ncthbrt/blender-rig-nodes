@@ -5,7 +5,7 @@ schema_version = "1.0.0"
 id = "rig_nodes"
 version = "0.0.1"
 name = "Rig Nodes"
-tagline = "The power of geometry nodes applied to your rigs"
+tagline = "Procedural rigging with geometry nodes"
 maintainer = "Natalie Cuthbert <natalie@cuthbert.co.za>"
 type = "add-on"
 
