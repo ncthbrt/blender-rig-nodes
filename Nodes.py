@@ -85,9 +85,8 @@ classes = (
 
 
 def register():
-    from bpy.utils import register_class
-    for cls in classes:
-        register_class(cls)
+    if not hasattr(bpy.types, "NODE_MT_rig_nodes_geo_menu"):
+        bpy.types.NODE_MT_add.append(add_etk_button)
 
     bpy.types.NODE_MT_add.append(draw_add_menu)
 
@@ -95,10 +94,3 @@ def register():
 def unregister():
     bpy.types.NODE_MT_add.remove(draw_add_menu)
 
-    from bpy.utils import unregister_class
-    for cls in reversed(classes):
-        unregister_class(cls)
-
-
-if __name__ == "__main__":
-    register()
