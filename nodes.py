@@ -1,5 +1,5 @@
 import bpy
-from bpy.types import Node
+from bpy.types import Node, Menu
 from bl_ui import node_add_menu
 
 
@@ -8,20 +8,20 @@ from bl_ui import node_add_menu
 class ArmatureNode:
     @classmethod
     def poll(cls, ntree):
-        return ntree.bl_idname == "GeometryNodeTree" 
+        return ntree.bl_idname == "GeometryNodeTree"
 
 
 # Derived from the Node base type.
 class EdgesToArmatureNode(ArmatureNode, Node):
     # === Basics ===
     # Description string
-    '''Converts edges to an armature'''
+    """Converts edges to an armature"""
     # Optional identifier string. If not explicitly defined, the python class name is used.
-    bl_idname = 'EdgesToArmatureNodeType'
+    bl_idname = "EdgesToArmatureNodeType"
     # Label for nice name display
     bl_label = "Edges to Armature"
     # Icon identifier
-    bl_icon = 'ARMATURE_DATA'
+    bl_icon = "ARMATURE_DATA"
 
     # === Custom Properties ===
     # These work just like custom properties in ID data blocks
@@ -36,8 +36,8 @@ class EdgesToArmatureNode(ArmatureNode, Node):
     # NOTE: this is not the same as the standard __init__ function in Python, which is
     #       a purely internal Python method and unknown to the node system!
     def init(self, context):
-        self.inputs.new('NodeSocketGeometry', "Geometry")
-        self.outputs.new('NodeSocketGeometry', "Geometry")        
+        self.inputs.new("NodeSocketGeometry", "Geometry")
+        self.outputs.new("NodeSocketGeometry", "Geometry")
 
     # Copy function to initialize a copied node from an existing one.
     def copy(self, node):
@@ -49,16 +49,16 @@ class EdgesToArmatureNode(ArmatureNode, Node):
 
     # Additional buttons displayed on the node.
     def draw_buttons(self, context, layout):
-#        layout.label(text="Node settings")
-#        layout.prop(self, "my_float_prop")
+        #        layout.label(text="Node settings")
+        #        layout.prop(self, "my_float_prop")
         pass
 
     # Detail buttons in the sidebar.
     # If this function is not defined, the draw_buttons function is used instead
     def draw_buttons_ext(self, context, layout):
-#        layout.prop(self, "my_float_prop")
+        #        layout.prop(self, "my_float_prop")
         # my_string_prop button will only be visible in the sidebar
-#        layout.prop(self, "my_string_prop")
+        #        layout.prop(self, "my_string_prop")
         pass
 
     # Optional: custom label
@@ -70,27 +70,49 @@ class EdgesToArmatureNode(ArmatureNode, Node):
 # Add custom nodes to the Add menu.
 def draw_add_menu(self, context):
     layout = self.layout
-    if context.space_data.tree_type != 'GeometryNodeTree':
+    if context.space_data.tree_type != "GeometryNodeTree":
         # Avoid adding nodes to other node trees
         return
-    node_add_menu.draw_assets_for_catalog(layout, "Armature")
+    # node_add_menu.draw_assets_for_catalog(layout, "Armature")
     layout = self.layout
+    bpy.types.NODE_MT_rig_nodes_geo_menu.append()
     # Add nodes to the layout. Can use submenus, separators, etc. as in any other menu.
     node_add_menu.add_node_type(layout, "EdgesToArmatureNodeType")
 
 
-classes = (
-    EdgesToArmatureNode,
-)
+class NODE_MT_rig_nodes_geo_menu(Menu):
+    bl_label = "Armature"
+    bl_idname = "NODE_MT_rig_nodes_geo_menu"
+    icon = "ARMATURE_DATA"
+
+    @classmethod
+    def poll(cls, context):
+        return context.space_data.tree_type == "GeometryNodeTree"
+
+    def draw(self, context):
+        pass
+
+
+classes = (EdgesToArmatureNode, NODE_MT_rig_nodes_geo_menu)
+
+
+def add_rig_nodes_button(self, context):
+    if context.area.ui_type == "GeometryNodeTree":
+        self.layout.menu(
+            NODE_MT_rig_nodes_geo_menu.bl_idname,
+            text=NODE_MT_rig_nodes_geo_menu.bl_label,
+            icon=NODE_MT_rig_nodes_geo_menu.icon,
+        )
 
 
 def register():
-    if not hasattr(bpy.types, "NODE_MT_rig_nodes_geo_menu"):
-        bpy.types.NODE_MT_add.append(add_etk_button)
+    if not hasattr(bpy.types, NODE_MT_rig_nodes_geo_menu.bl_idname):
+        bpy.types.NODE_MT_add.append(add_rig_nodes_button)
 
     bpy.types.NODE_MT_add.append(draw_add_menu)
 
 
 def unregister():
+    if hasattr(bpy.types, NODE_MT_rig_nodes_geo_menu.bl_idname):
+        bpy.types.NODE_MT_add.remove(add_rig_nodes_button)
     bpy.types.NODE_MT_add.remove(draw_add_menu)
-
