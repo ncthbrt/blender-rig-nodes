@@ -25,7 +25,7 @@ blender_version_min = "4.4.0"
 # https://docs.blender.org/manual/en/dev/advanced/extensions/licenses.html
 license = ["SPDX:GPL-3.0-or-later"]
 # # Optional: required by some licenses.
-copyright = ["2025 Natalie Cuthbert <natalie@cuthbert.co.za>"]
+copyright = ["2025 Natalie Cuthbert <natalie@cuthbert.co.za>", "2025 BD3D DIGITAL DESIGN (Dorian B.)"]
 
 # # Optional: list of supported platforms. If omitted, the extension will be available in all operating systems.
 # platforms = ["windows-x64", "macos-arm64", "linux-x64"]

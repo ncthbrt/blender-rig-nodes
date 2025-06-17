@@ -6,6 +6,7 @@ GN_CustomNodes = ("Armature", ())
 
 classes = ()
 
-
-# for utility. handlers.py module will use this list.
-allcustomnodes = tuple(cls for cls in classes if (("_NG_" in cls.__name__)))
+#for utility. handlers.py module will use this list.
+allcustomnodes = tuple(cls for cls in classes if
+                  (('_NG_' in cls.__name__) or
+                   ('_ND_' in cls.__name__)) )

@@ -8,7 +8,7 @@ import bpy
 bl_info = {
     "name": "Rig Nodes",
     "author": "Natalie Cuthbert <natalie@cuthbert.co.za>",
-    "version": (0, 0, 0),
+    "version": (0, 0, 1),
     "blender": (4, 1, 0),
     "location": "Node Editor",
     "description": "Procedural rigging with geometry nodes",
