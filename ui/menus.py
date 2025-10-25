@@ -62,7 +62,7 @@ class RIG_NODES_MT_GeometryNodeTree(DynaMenu, bpy.types.Menu):
     bl_idname = "RIGNODES_MT_GeometryNodeTree"
     bl_label = "Armature"
     node_items = GN_CustomNodes
-    tree_type = "GeometryNodeTree"
+    tree_type = "RigNodesTree"
 
 
 def rig_nodes_templatemenu_append(self, context):

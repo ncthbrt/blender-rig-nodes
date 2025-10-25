@@ -55,15 +55,17 @@ def get_addon_classes(revert=False):
     from .custom_nodes import classes as nodes_classes
     from .custom_modifiers import classes as modifiers_classes
     from .custom_sockets import classes as sockets_classes
+    from .custom_node_trees import classes as node_tree_classes
     from .ui import classes as ui_classes
 
     classes = (
         properties_classes
         + operators_classes
         + nodes_classes
-        + ui_classes
         + modifiers_classes
         + sockets_classes
+        + node_tree_classes
+        + ui_classes
     )
 
     if revert:

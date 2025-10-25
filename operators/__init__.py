@@ -10,6 +10,8 @@ ADDON_KEYMAPS = []
 
 KMI_DEFS = ()
 
+classes = ()
+
 
 def load_operators_keymaps():
     # TODO, ideally we need to save these keys on addonprefs somehow, it will reset per blender sessions.

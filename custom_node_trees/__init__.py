@@ -2,11 +2,14 @@
 # SPDX-FileCopyrightText: 2025 BD3D DIGITAL DESIGN (Dorian B.)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-GN_CustomNodeGraphs = ("RigNodes", ())
+from ..__init__ import get_addon_prefs, dprint
+from .rig_node import RigNodeTree
 
-classes = ()
+classes = (
+    RigNodeTree   
+)
 
 #for utility. handlers.py module will use this list.
-allcustomnodes = tuple(cls for cls in classes if
-                  (('_NG_' in cls.__name__) or
-                   ('_ND_' in cls.__name__)) )
+allcustomtrees = tuple(
+    cls for cls in classes if (('NodeTree' in cls.__name__))
+)
