@@ -39,7 +39,7 @@ class DynaMenu:
                     and isinstance(item[1], tuple)
                 ):
                     submenu_name = item[0]
-                    submenu_id = f"NODEBOOSTER_MT_{submenu_name}" + self.tree_type
+                    submenu_id = f"RIG_NODES_MT_{submenu_name}" + self.tree_type
 
                     if submenu_id not in been_drawn:
                         layout.menu(submenu_id)
@@ -58,24 +58,24 @@ class DynaMenu:
         return None
 
 
-class NODEBOOSTER_MT_GeometryNodeTree(DynaMenu, bpy.types.Menu):
+class RIG_NODES_MT_GeometryNodeTree(DynaMenu, bpy.types.Menu):
     bl_idname = "RIGNODES_MT_GeometryNodeTree"
     bl_label = "Armature"
     node_items = GN_CustomNodes
     tree_type = "GeometryNodeTree"
 
 
-def nodebooster_templatemenu_append(self, context):
+def rig_nodes_templatemenu_append(self, context):
     layout = self.layout
     layout.separator()
     layout.menu(
-        "NODEBOOSTER_MT_textemplate",
-        text="Booster Scripts",
+        "RIG_NODES_MT_textemplate",
+        text="Rig Nodes Scripts",
     )
     return None
 
 
-def nodebooster_addmenu_append(
+def rig_nodes_addmenu_append(
     self,
     context,
 ):
@@ -85,7 +85,7 @@ def nodebooster_addmenu_append(
     return None
 
 
-def nodebooster_nodemenu_append(self, context):
+def rig_nodes_nodemenu_append(self, context):
     layout = self.layout
     layout.separator()
     layout.operator(
@@ -101,9 +101,9 @@ MENUS = (
     bpy.types.TEXT_MT_templates,
 )
 DRAWFUNCS = (
-    nodebooster_addmenu_append,
-    nodebooster_nodemenu_append,
-    nodebooster_templatemenu_append,
+    rig_nodes_addmenu_append,
+    rig_nodes_nodemenu_append,
+    rig_nodes_templatemenu_append,
 )
 
 
@@ -118,10 +118,10 @@ def register_submenus(custom_nodes, shadertype):
 
         # Define a new menu class that inherits from the base menu
         menu_cls = type(
-            f"NODEBOOSTER_MT_{menu_name}",
+            f"RIG_NODES_MT_{menu_name}",
             (DynaMenu, bpy.types.Menu),
             {
-                "bl_idname": f"NODEBOOSTER_MT_{menu_name}",
+                "bl_idname": f"RIG_NODES_MT_{menu_name}",
                 "bl_label": user_name,
                 "node_items": menu_items,
             },
@@ -162,18 +162,13 @@ def append_menus():
 
     # Register the main menus
     for cls in {
-        NODEBOOSTER_MT_GeometryNodeTree,
-        NODEBOOSTER_MT_ShaderNodeTree,
-        NODEBOOSTER_MT_CompositorNodeTree,
+        RIG_NODES_MT_GeometryNodeTree        
     }:
         bpy.utils.register_class(cls)
         continue
 
     # Register submenus for all tree types
     register_submenus(GN_CustomNodes, "GeometryNodeTree")
-    register_submenus(SH_CustomNodes, "ShaderNodeTree")
-    register_submenus(CP_CustomNodes, "CompositorNodeTree")
-
     return None
 
 
@@ -186,7 +181,7 @@ def remove_menus():
 
     # Unregister the main menu classes
     for cls in {
-        NODEBOOSTER_MT_GeometryNodeTree,
+        RIG_NODES_MT_GeometryNodeTree,
     }:
         bpy.utils.unregister_class(cls)
         continue

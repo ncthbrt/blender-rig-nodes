@@ -2,7 +2,7 @@ ABOUT: Custom Nodes for Blender’s Existing NodeEditors
 ================================================
 
 This plugin extends Blender’s native NodeTree system by adding custom nodes 
-to the Geometry Nodes and/or Shader Node and/or Compositor Nodes editors. 
+to the Geometry Node editors. 
 It builds on top of existing editors and enhances them 
 with new node types and/or socket types.
 
@@ -19,21 +19,17 @@ Please note the following restrictions, due to how Blender handles node evaluati
          a node.execute() function for example. Maybe it will added one day.
 - You can: 
   - Arrange a hidden nodegroup nodetree nodes, links, and parameters value. 
-  - Spit out a constant value. 
-  - For Shader and Compositor: Add your own separate nodes evaluation process, which outputs will automatically arrange a hidden node_tree 
-    and/or spit out a constant value. for geometry node this PR is required because unknown socketypes implementation in GN source is
-    not as flexible as the other editors https://projects.blender.org/blender/blender/pulls/136968.
-
+  - Spit out a constant value.   
 
 Folder Structure & Contribution
 -------------------------------
 
 You can implement two types of nodes:
 - CustomNodeGroup:
-    See it as a NodeGroup with python properties and  extra interface abilities.
-    In the NodeBooster N Panel > Active Node > Development, you can see the hidden NodeGroup data.
+    See it as a NodeGroup with python properties and extra interface abilities.
+    In the RigNodes N Panel > Active Node > Development, you can see the hidden NodeGroup data.
 - CustomNode: 
-    TODO 
+    TODO
     write about this.. 
     How it can be used, how it requires an evaluator. 
     explain how they can implement in the current evaluator system.
@@ -46,8 +42,8 @@ To contribute a custom node, follow these steps:
      - On init(), if you are using a CustomNodeGroup, you'll need to assign 
        your hidden node.node_tree. 
      - Please follow the established naming conventions. 
-       - always start your class with NODEBOOSTER_ 
-       - bl_idname should contain the keyword 'NodeBooster'.
+       - always start your class with RIG_NODES_ 
+       - bl_idname should contain the keyword 'RigNodes'.
        - Use _NG_ for NodeCustomGroup and _ND_ for NodeCustom. 
      - Use the 'node.auto_update = {}' attribute to automatically run 'cls.update_all()' on depsgraph.
      - node.update() will run when the user is adding new links in the node_tree. 

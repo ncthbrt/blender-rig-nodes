@@ -15,7 +15,6 @@ from ..utils.node_utils import (
 
 
 class RIG_NODES_NG_GN_Pose(bpy.types.GeometryNodeCustomGroup):
-
     bl_idname = "RigNodesPose"
     bl_label = "Pose"
     bl_description = """"""
@@ -80,7 +79,7 @@ class RIG_NODES_NG_GN_Pose(bpy.types.GeometryNodeCustomGroup):
         return None
 
     def draw_panel(self, layout, context):
-        """draw in the nodebooster N panel 'Active Node'"""
+        """draw in the rig_nodes N panel 'Active Node'"""
 
         n = self
 
@@ -90,7 +89,7 @@ class RIG_NODES_NG_GN_Pose(bpy.types.GeometryNodeCustomGroup):
             word_wrap(layout=panel, alert=False, active=True, max_char='auto',
                 char_auto_sidepadding=0.9, context=context, string=n.bl_description,
                 )
-            panel.operator("wm.url_open", text="Documentation",).url = "https://blenderartists.org/t/node-booster-extending-blender-node-editors"
+            panel.operator("wm.url_open", text="Documentation",).url = "https://github.com/ncthbrt/blender-rig-nodes/wiki/"
 
         header, panel = layout.panel("dev_panelid", default_closed=True,)
         header.label(text="Development",)

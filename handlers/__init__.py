@@ -60,7 +60,7 @@ def windows_changed():
 def upd_all_custom_nodes(classes: list):
     """automatically run the update_all() function of all custom nodes passed"""
 
-    # NOTE function below will simply collect all instances of 'NodeBooster' nodes.
+    # NOTE function below will simply collect all instances of 'RigNodes' nodes.
     # NOTE there's a lot of classes, and this functions might loop over a lot of data.
     # for optimization purpose, instead of each cls using the function, we create it once
     # here, then pass the list to the update functions with the 'using_nodes' param.
@@ -68,7 +68,7 @@ def upd_all_custom_nodes(classes: list):
     if not classes:
         return None
 
-    sett_win = bpy.context.window_manager.nodebooster
+    sett_win = bpy.context.window_manager.rig_nodes
     has_autorization = sett_win.authorize_automatic_execution
 
     matching_blid = [cls.bl_idname for cls in classes]
@@ -99,15 +99,15 @@ DEPSPOST_UPD_NODES = [cls for cls in allcustomnodes if ("DEPS_POST" in cls.auto_
 
 
 @bpy.app.handlers.persistent
-def nodebooster_handler_depspost(scene, desp):
+def rig_nodes_handler_depspost(scene, desp):
     """update on depsgraph change"""
 
     if get_addon_prefs().debug_depsgraph:
-        print("nodebooster_handler_depspost(): depsgraph signal")
+        print("rig_nodes_handler_depspost(): depsgraph signal")
 
     if get_addon_prefs().auto_launch_minimap_navigation:
         if windows_changed():
-            win_sett = bpy.context.window_manager.nodebooster
+            win_sett = bpy.context.window_manager.rig_nodes
             # we are forced to restart the modal navigation when a window is opened.
             # a modal op is tied per window, so if we need to support our nav widget
             # for this window, we need to relaunch our multi window modal.
@@ -123,11 +123,11 @@ FRAMEPRE_UPD_NODES = [cls for cls in allcustomnodes if ("FRAME_PRE" in cls.auto_
 
 
 @bpy.app.handlers.persistent
-def nodebooster_handler_framepre(scene, desp):
+def rig_nodes_handler_framepre(scene, desp):
     """update on frame change"""
 
     if get_addon_prefs().debug_depsgraph:
-        print("nodebooster_handler_framepre(): frame_pre signal")
+        print("rig_nodes_handler_framepre(): frame_pre signal")
 
     # updates for our custom nodes
     upd_all_custom_nodes(FRAMEPRE_UPD_NODES)
@@ -138,11 +138,11 @@ LOADPOST_UPD_NODES = [cls for cls in allcustomnodes if ("LOAD_POST" in cls.auto_
 
 
 @bpy.app.handlers.persistent
-def nodebooster_handler_loadpost(scene, desp):
+def rig_nodes_handler_loadpost(scene, desp):
     """Handler function when user is loading a file"""
 
     if get_addon_prefs().debug_depsgraph:
-        print("nodebooster_handler_framepre(): frame_pre signal")
+        print("rig_nodes_handler_framepre(): frame_pre signal")
 
     # need to add message bus on each blender load
     register_msgbusses()
@@ -152,7 +152,7 @@ def nodebooster_handler_loadpost(scene, desp):
 
     # start the minimap navigation automatically? only if the user enabled it.
     if get_addon_prefs().auto_launch_minimap_navigation:
-        bpy.context.window_manager.nodebooster.minimap_modal_operator_is_active = True
+        bpy.context.window_manager.rig_nodes.minimap_modal_operator_is_active = True
 
     # updates for our custom nodes
     upd_all_custom_nodes(LOADPOST_UPD_NODES)
@@ -187,14 +187,14 @@ def load_handlers():
 
     handler_names = [h.__name__ for h in all_handlers()]
 
-    if "nodebooster_handler_depspost" not in handler_names:
-        bpy.app.handlers.depsgraph_update_post.append(nodebooster_handler_depspost)
+    if "rig_nodes_handler_depspost" not in handler_names:
+        bpy.app.handlers.depsgraph_update_post.append(rig_nodes_handler_depspost)
 
-    if "nodebooster_handler_framepre" not in handler_names:
-        bpy.app.handlers.frame_change_pre.append(nodebooster_handler_framepre)
+    if "rig_nodes_handler_framepre" not in handler_names:
+        bpy.app.handlers.frame_change_pre.append(rig_nodes_handler_framepre)
 
-    if "nodebooster_handler_loadpost" not in handler_names:
-        bpy.app.handlers.load_post.append(nodebooster_handler_loadpost)
+    if "rig_nodes_handler_loadpost" not in handler_names:
+        bpy.app.handlers.load_post.append(rig_nodes_handler_loadpost)
 
     return None
 
@@ -203,13 +203,13 @@ def unload_handlers():
 
     for h in all_handlers():
 
-        if h.__name__ == "nodebooster_handler_depspost":
+        if h.__name__ == "rig_nodes_handler_depspost":
             bpy.app.handlers.depsgraph_update_post.remove(h)
 
-        if h.__name__ == "nodebooster_handler_framepre":
+        if h.__name__ == "rig_nodes_handler_framepre":
             bpy.app.handlers.frame_change_pre.remove(h)
 
-        if h.__name__ == "nodebooster_handler_loadpost":
+        if h.__name__ == "rig_nodes_handler_loadpost":
             bpy.app.handlers.load_post.remove(h)
 
     return None

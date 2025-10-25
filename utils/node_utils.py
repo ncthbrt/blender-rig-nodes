@@ -23,42 +23,25 @@ from .fct_utils import ColorRGBA
 
 SOCK_AVAILABILITY_TABLE = {
     'GEOMETRY':    ('NodeSocketFloat', 'NodeSocketInt', 'NodeSocketVector', 'NodeSocketColor', 'NodeSocketBool', 'NodeSocketRotation', 'NodeSocketMatrix', 'NodeSocketString', 'NodeSocketMenu', 'NodeSocketObject', 'NodeSocketGeometry', 'NodeSocketCollection', 'NodeSocketTexture', 'NodeSocketImage', 'NodeSocketMaterial',),
-    'SHADER':      ('NodeSocketFloat', 'NodeSocketInt', 'NodeSocketVector', 'NodeSocketColor', 'NodeSocketBool', 'NodeSocketShader', ),
-    'COMPOSITING': ('NodeSocketFloat', 'NodeSocketInt', 'NodeSocketVector', 'NodeSocketColor', ),
-    }
-TREE_TO_GROUP_EQUIV = {
-    'ShaderNodeTree': 'ShaderNodeGroup',
-    'CompositorNodeTree': 'CompositorNodeGroup',
+}
+
+TREE_TO_GROUP_EQUIV = {        
     'GeometryNodeTree': 'GeometryNodeGroup',
-    }
+}
 
 
-def get_all_nodes(ignore_ng_name:str="NodeBooster", approxmatch_idnames:str="", exactmatch_idnames: set | None = None, ngtypes:set | None =None) -> set|list:
+def get_all_nodes(ignore_ng_name:str="RigNodes", approxmatch_idnames:str="", exactmatch_idnames: set | None = None, ngtypes:set | None =None) -> set|list:
     """get nodes instances across many nodetree editor types.
-    - ngtypes: the editor types to be supported in {'GEOMETRY','SHADER','COMPOSITING',}. will use all if None
+    - ngtypes: the editor types to be supported in {'GEOMETRY'}. will use all if None
     - ignore_ng_name: ignore getting nodes from a nodetree containing a specific name.
     - approxmatch_idnames: only get nodes whose include the given token.
     - exactmatch_idnames: only get nodes included in the set of given id names.
     """
  
     if (ngtypes is None):
-        ngtypes = {'GEOMETRY','SHADER','COMPOSITING',}
+        ngtypes = {'GEOMETRY'}
 
     nodes = set()
-
-    if ('SHADER' in ngtypes):
-        #get all nodes of all materials
-        for mat in bpy.data.materials:
-            if mat.use_nodes and mat.node_tree:
-                for n in mat.node_tree.nodes:
-                    nodes.add(n)
-
-    if ('COMPOSITING' in ngtypes):
-        #get all nodes of the compositor base tree
-        for scn in bpy.data.scenes:
-            if scn.use_nodes and scn.node_tree:
-                for n in scn.node_tree.nodes:
-                    nodes.add(n)
 
     for ng in bpy.data.node_groups:
         
@@ -108,7 +91,7 @@ def send_refresh_signal(socket):
     return None
 
 
-def socket_intersections(socket, direction:str='LEFT',) -> dict:
+def socket_intersections(socket, direction:str = 'LEFT') -> dict:
     """ parcour a nodetree from a given socket with given direction. 
     Will return a dictionary of colliding sockets and their links route.
     Reroutes and muted nodes sockets are ignored along the way, except for dead end reroutes.
@@ -312,16 +295,6 @@ def crosseditor_socktype_adjust(socket_type:str, ngtype:str) -> str:
         case 'GEOMETRY':
             pass
 
-        case 'SHADER':
-            if (socket_type in {'NodeSocketRotation', 'NodeSocketMatrix'}):
-                # TODO cross editor support for these types? Pff. Better: Blender code base should support it.
-                pass
-
-        case 'COMPOSITING':
-            #No bool in compositor. We use int instead
-            if (socket_type=='NodeSocketBool'):
-                socket_type = 'NodeSocketInt'
-
     if (socket_type not in compat):
         return f"Unavailable{socket_type}"
     return socket_type
@@ -405,11 +378,7 @@ def set_ng_socket_defvalue(ng, idx:int | None=None, socket=None, socket_name:str
 
     #convert color to list
     if type(value) is ColorRGBA:
-        value = value[:]
-
-    #No bool in compositor. Use int instead
-    if (ng.type=='COMPOSITING' and type(value) is bool):
-        value = int(value)
+        value = value[:]    
 
     # setting a default value of a input is very different from an output.
     #  - set a defaultval input can only be done by changing all node instances input of that nodegroup..
@@ -566,7 +535,7 @@ def create_ng_socket(ng, in_out:str='OUTPUT', socket_type:str="NodeSocketFloat",
     # # node.inputs.new('customtype') works on other editors, but not for geometry node.. because could benefit from a C source code modif..
     # # NOTE C++ ng.interface isn't happy with custom types. Color is pink and if user go in interface it will scream.
     # # perhaps would require a bug report? THis tool need to gain popularity first tho, to convice C dev it's very useful to userbase and plugin dev base..
-    # if (socket_type.startswith('NodeBoosterCustomSocket')):
+    # if (socket_type.startswith('RigNodesCustomSocket')):
     #
     #     #create an utility reroute
     #     customreroute = ng.nodes.new('CustomSocketUtility')
@@ -637,12 +606,6 @@ def create_ng_constant_node(ng, nodetype:str, value, uniquetag:str, location:str
             node.location.y = location[1]
 
     match nodetype:
-
-        case 'ShaderNodeValue'|'CompositorNodeValue':
-            if (node.outputs[0].default_value!=value):
-                node.outputs[0].default_value = value
-            return node.outputs[0]
-
         case 'FunctionNodeQuaternionToRotation':
             assert type(value) is Quaternion, f"Please make sure passed value is of Quaternion type. Currently is of {type(value).__name__}"
             assert len(value)==4, f"Please make sure the passed Quaternion has 4 WXYZ elements. Currently contains {len(value)}"

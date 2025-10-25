@@ -5,8 +5,8 @@
 import bpy
 
 from .menus import (
-    NODEBOOSTER_MT_addmenu_general,
-    NODEBOOSTER_MT_textemplate,
+    RIG_NODES_MT_addmenu_general,
+    RIG_NODES_MT_textemplate,
 )
 
 classes = ()
